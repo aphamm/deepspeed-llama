@@ -1,0 +1,9 @@
+{
+    "zero_optimization": {
+	    "stage": 2
+    },
+    "fp16": {
+	    "enabled": true
+    },
+    "gradient_clipping": "auto"
+}
