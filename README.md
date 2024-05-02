@@ -3,6 +3,7 @@
 ### Install Dependencies
 
 ```bash
+sudo apt-get install libaio-dev
 pip install -r requirements.txt
 ```
 
@@ -26,4 +27,7 @@ python extract_repo.py --repo_url="https://github.com/modal-labs/modal-client" -
 
 ```bash
 wandb login
+git config --global credential.helper store
+huggingface-cli login
+python finetune.py --repo="modal-client" --batch_size=16 --num_steps=400 --ds_config="config/stage1.json"
 ```
