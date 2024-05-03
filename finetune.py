@@ -1,20 +1,27 @@
-import fire
 import os
 import sys
 
+import fire
 import torch
+from datasets import load_dataset
 from peft import (
     LoraConfig,
     get_peft_model,
     get_peft_model_state_dict,
     prepare_model_for_kbit_training,
 )
-from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForSeq2Seq, BitsAndBytesConfig
-from datasets import load_dataset
+from transformers import (
+    AutoModelForCausalLM,
+    AutoTokenizer,
+    BitsAndBytesConfig,
+    DataCollatorForSeq2Seq,
+    Trainer,
+    TrainingArguments,
+)
+
 
 def make_example(example, tokenizer):
-
-    prompt =f"""You are a powerful code assistant model. Your job is to answer questions about a codebase called modal-client.
+    prompt = f"""You are a powerful code assistant model. Your job is to answer questions about a codebase called modal-client.
 
         # You must generate Python code that answers the question.
 
@@ -40,8 +47,8 @@ def make_example(example, tokenizer):
     result["labels"] = result["input_ids"].copy()
     return result
 
-def main(repo: str, batch_size: int, num_steps: int, ds_config: str):
 
+def main(repo: str, batch_size: int, num_steps: int, ds_config: str):
     assert torch.cuda.device_count() > 1, "missing multi-GPU setup"
 
     dataset = load_dataset(f"aphamm/{repo}", split="train")
@@ -128,9 +135,9 @@ def main(repo: str, batch_size: int, num_steps: int, ds_config: str):
     model.config.use_cache = False
 
     old_state_dict = model.state_dict
-    model.state_dict = (lambda self, *_, **__: get_peft_model_state_dict(self, old_state_dict())).__get__(
-        model, type(model)
-    )
+    model.state_dict = (
+        lambda self, *_, **__: get_peft_model_state_dict(self, old_state_dict())
+    ).__get__(model, type(model))
     if torch.__version__ >= "2" and sys.platform != "win32":
         print("compiling the model")
         model = torch.compile(model)

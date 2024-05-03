@@ -1,5 +1,11 @@
 ## Finetune a LLM with DeepSpeed on Kubernetes Cluster 🚀
 
+### Create a VM in GCP
+
+```bash
+$ python3 create_vm.py --project_id="high-performance-ml" --vm_name="sleds" --disk_size=200 --gpu_type="nvidia-tesla-t4" --gpu_count=4 --machine_type="n1-standard-8"
+```
+
 ### Install Dependencies
 
 ```bash
@@ -30,4 +36,10 @@ wandb login
 git config --global credential.helper store
 huggingface-cli login
 python finetune.py --repo="modal-client" --batch_size=16 --num_steps=400 --ds_config="config/stage1.json"
+```
+
+### Inference
+
+```bash
+python inference.py --model_path="aphamm/finetune2"
 ```
