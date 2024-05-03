@@ -36,6 +36,8 @@ wandb login
 git config --global credential.helper store
 huggingface-cli login
 python finetune.py --repo="modal-client" --batch_size=16 --num_steps=400 --ds_config="config/stage1.json"
+python finetune.py --repo="modal-client" --batch_size=16 --num_steps=400 --ds_config="config/stage2.json"
+python finetune.py --repo="modal-client" --batch_size=16 --num_steps=400 --ds_config="config/stage3.json"
 ```
 
 ### Inference
