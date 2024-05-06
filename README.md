@@ -1,4 +1,4 @@
-lear## Finetune a LLM with DeepSpeed on Kubernetes Cluster 🚀
+## Finetune a LLM with DeepSpeed on Kubernetes Cluster 🚀
 
 ### Create a VM in GCP
 
@@ -105,13 +105,15 @@ Install the NVIDIA Drivers
 kubectl apply -f https://raw.githubusercontent.com/GoogleCloudPlatform/container-engine-accelerators/master/nvidia-driver-installer/cos/daemonset-preloaded-latest.yaml
 ```
 
+### Build Docker Image
+
 Log in to Docker Hub
 
 ```bash
 docker login
 ```
 
-Build Docker image and push to Docker Hub
+Build image and push to Hub
 
 ```bash
 docker build -t austinphamm/deepspeed-inference:v1 -f ./Dockerfile .
