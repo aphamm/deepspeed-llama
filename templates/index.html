@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Llama Chat</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica,
+          Arial, sans-serif;
+        background-color: #1e1e1e;
+        color: #d4d4d4;
+        margin: 0;
+        padding: 0;
+      }
+      .container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #252526;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+      }
+      h1 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #569cd6;
+      }
+      .chat-box {
+        background-color: #1e1e1e;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        height: 400px;
+        overflow-y: auto;
+      }
+      .chat-message {
+        margin-bottom: 10px;
+      }
+      .user-message {
+        color: #ce9178;
+      }
+      .assistant-message {
+        color: #4ec9b0;
+      }
+      .input-box {
+        display: flex;
+      }
+      input[type="text"] {
+        flex: 1;
+        padding: 10px;
+        font-size: 16px;
+        border: none;
+        border-radius: 4px;
+        background-color: #333333;
+        color: #d4d4d4;
+        margin-right: 10px;
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #007acc;
+        color: #ffffff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .latency-info {
+        color: #569cd6;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Llama Chat</h1>
+      <div class="chat-box" id="chat-box">
+      </div>
+      <div class="input-box">
+        <input type="text" id="user-input" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <script>
+      function sendMessage() {
+        var userInput = document.getElementById("user-input").value;
+        var chatBox = document.getElementById("chat-box");
+
+        var userMessage = document.createElement("div");
+        userMessage.className = "chat-message user-message";
+        userMessage.textContent = "User: " + userInput;
+        chatBox.appendChild(userMessage);
+
+        document.getElementById("user-input").value = "";
+
+        fetch("/generate", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: "user_input=" + encodeURIComponent(userInput),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            var assistantMessage = document.createElement("div");
+            assistantMessage.className = "chat-message assistant-message";
+            assistantMessage.textContent = "Response: " + data.response;
+            chatBox.appendChild(assistantMessage);
+            var latencyInfo = document.createElement("div");
+            latencyInfo.className = "latency-info";
+            latencyInfo.textContent =
+              "Response time: " + data.time.toFixed(2) + " seconds";
+            chatBox.appendChild(latencyInfo);
+            chatBox.scrollTop = chatBox.scrollHeight;
+          });
+      }
+    </script>
+  </body>
+</html>

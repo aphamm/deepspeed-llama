@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: inference-app
+  labels:
+    app: inference-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inference-app
+  template:
+    metadata:
+      labels:
+        app: inference-app
+    spec:
+      containers:
+        - name: inference-app
+          image: austinphamm/deepspeed-inference:v1
+          ports:
+            - containerPort: 8080
+          env:
+            - name: FLASK_ENV
+              value: production
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+      nodeSelector:
+        cloud.google.com/gke-accelerator: nvidia-tesla-t4
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: inference-service
+  labels:
+    app: inference-app
+spec:
+  selector:
+    app: inference-app
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: LoadBalancer
